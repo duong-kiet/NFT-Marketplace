@@ -12,6 +12,11 @@ const config: HardhatUserConfig = {
       accounts: [process.env.PRIVATE_KEY],
     },
   },
+  etherscan: {
+    apiKey: {
+      polygon_amoy: process.env.INFURA_API_KEY,
+    },
+  },
 };
 
 export default config;
