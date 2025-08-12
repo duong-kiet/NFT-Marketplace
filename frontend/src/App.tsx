@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import NavBar from "./components/NavBar";
 import SearchSection from "./components/SearchSection";
 import Profile from "./components/Profile";
@@ -33,7 +33,25 @@ function App() {
     },
   });
 
-  console.log(data);
+  useEffect(() => {
+    // Hàm xử lý khi tài khoản thay đổi
+    const handleAccountsChanged = (accounts: any) => {
+      if (accounts) {
+        setAddress(accounts[0]);
+      } else {
+        setAddress("");
+      }
+    };
+
+    // Listen event accountsChanged
+    window.ethereum.on("accountsChanged", handleAccountsChanged);
+
+    // Cleanup component unmount
+    return () => {
+      window.ethereum.removeListener("accountsChanged", handleAccountsChanged);
+      console.log("Bỏ luôn em ơi");
+    };
+  }, []);
 
   return (
     <AddressContext.Provider value={{ address, setAddress }}>

@@ -45,7 +45,7 @@ export default function TransferMyNFTCollection() {
       }
     };
     fetchNFTCollection();
-  }, []);
+  }, [address]);
   return (
     <Box sx={{ marginTop: "60px", padding: 0, marginBottom: "40px" }}>
       <Typography
