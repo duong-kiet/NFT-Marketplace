@@ -10,7 +10,7 @@ dataSources:
     source:
       address: "0x83a32888b3aa4ec96F61c4A33b3720f254A429C7"
       abi: KietToken
-      startBlock: 25009787
+      startBlock: 25009786
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.9

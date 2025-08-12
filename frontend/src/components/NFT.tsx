@@ -20,9 +20,11 @@ const style = {
 export default function NFT({
   metadata,
   owner,
+  minter,
 }: {
   metadata: string;
   owner: string;
+  minter: string;
 }) {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -173,6 +175,21 @@ export default function NFT({
                 Owner:
                 <span style={{ fontWeight: 600, marginLeft: 8 }}>
                   {shortenAddress(owner) || "Unknown"}
+                </span>
+              </Typography>
+              <Typography
+                sx={{
+                  mt: 1,
+                  color: "#888",
+                  fontStyle: "italic",
+                  fontSize: "1.05rem",
+                  letterSpacing: 0.5,
+                  display: "block",
+                }}
+              >
+                Minter:
+                <span style={{ fontWeight: 600, marginLeft: 8 }}>
+                  {shortenAddress(minter) || "Unknown"}
                 </span>
               </Typography>
             </Stack>

@@ -1,6 +1,7 @@
 import { Button, Stack, Typography, Modal, Box } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { shortenAddress } from "../helpers/shortentAddress";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const style = {
   position: "absolute",
@@ -19,161 +20,212 @@ const style = {
 
 export default function Mint({ event }: { event: any }) {
   const [open, setOpen] = useState(false);
+  const [metadata, setMetadata] = useState<any>(null);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  useEffect(() => {
+    if (!event.uri) return;
+
+    let cancelled = false;
+
+    async function fetchMeta() {
+      try {
+        const res = await fetch(event.uri);
+        const json = await res.json();
+
+        if (!cancelled) {
+          setMetadata(json);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    fetchMeta();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
-    <Stack
-      spacing={2}
-      sx={{
-        border: "1.5px solid #e0e7ff",
-        borderRadius: "16px",
-        padding: "20px",
-        marginX: "20px",
-        marginY: "10px",
-        textAlign: "center",
-        background: "linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%)",
-        boxShadow: "0 4px 24px 0 rgba(103,124,230,0.10)",
-        transition: "box-shadow 0.2s, transform 0.2s",
-        "&:hover": {
-          boxShadow: "0 8px 32px 0 rgba(103,124,230,0.18)",
-          transform: "translateY(-4px) scale(1.02)",
-          borderColor: "#a685e2",
-        },
-      }}
-    >
-      <img
-        src={event.image}
-        alt="NFT Thumbnail"
-        style={{
-          width: "100%",
-          borderRadius: "12px",
-          aspectRatio: "1",
-          objectFit: "cover",
-          boxShadow: "0 2px 12px rgba(103,124,230,0.08)",
-        }}
-      />
-      <Typography
-        variant="h6"
-        fontWeight={700}
-        sx={{
-          color: "#4f46e5",
-          letterSpacing: 1,
-          mt: 1,
-          mb: 0.5,
-          fontSize: "1.2rem",
-        }}
-      >
-        {event.name}
-      </Typography>
-      <div>
-        <Button
-          variant="contained"
-          onClick={handleOpen}
+    <>
+      {metadata ? (
+        <Stack
+          spacing={2}
           sx={{
-            background: "linear-gradient(90deg, #677ce6 0%, #a685e2 100%)",
-            color: "#fff",
-            fontWeight: 600,
-            borderRadius: "8px",
-            px: 3,
-            py: 1,
-            boxShadow: "0 2px 8px rgba(103,124,230,0.10)",
-            textTransform: "none",
-            fontSize: "1rem",
+            border: "1.5px solid #e0e7ff",
+            borderRadius: "16px",
+            padding: "20px",
+            marginX: "20px",
+            marginY: "10px",
+            textAlign: "center",
+            background: "linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%)",
+            boxShadow: "0 4px 24px 0 rgba(103,124,230,0.10)",
+            transition: "box-shadow 0.2s, transform 0.2s",
             "&:hover": {
-              background: "linear-gradient(90deg, #a685e2 0%, #677ce6 100%)",
+              boxShadow: "0 8px 32px 0 rgba(103,124,230,0.18)",
+              transform: "translateY(-4px) scale(1.02)",
+              borderColor: "#a685e2",
             },
           }}
         >
-          View Details
-        </Button>
-        <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-          sx={{
-            backdropFilter: "blur(2px)",
-          }}
-        >
-          <Box
+          <img
+            src={metadata.image}
+            alt="NFT Thumbnail"
+            style={{
+              width: "100%",
+              borderRadius: "12px",
+              aspectRatio: "1",
+              objectFit: "cover",
+              boxShadow: "0 2px 12px rgba(103,124,230,0.08)",
+            }}
+          />
+          <Typography
+            variant="h6"
+            fontWeight={700}
             sx={{
-              ...style,
-              border: "2px solid #a685e2",
-              boxShadow: "0 8px 32px 0 rgba(103,124,230,0.18)",
-              background: "linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%)",
+              color: "#4f46e5",
+              letterSpacing: 1,
+              mt: 1,
+              mb: 0.5,
+              fontSize: "1.2rem",
             }}
           >
-            <img
-              src={event.image}
-              alt="NFT Detail"
-              style={{
-                width: "340px",
-                borderRadius: "12px",
-                marginRight: "30px",
-                aspectRatio: "1",
-                objectFit: "cover",
-                boxShadow: "0 2px 12px rgba(103,124,230,0.10)",
-              }}
-            />
-            <Stack spacing={2} sx={{ ml: 4 }}>
-              <Typography
-                id="modal-modal-title"
-                variant="h5"
-                component="h2"
-                fontWeight={800}
-                sx={{
-                  color: "#4f46e5",
-                  mb: 2,
-                  letterSpacing: 1,
-                  textShadow: "0 2px 8px rgba(67,198,172,0.08)",
-                  fontSize: "2rem",
-                }}
-              >
-                <Box component="span" fontWeight="bold" sx={{ color: "black" }}>
-                  Name:
-                </Box>{" "}
-                {event.name}
-              </Typography>
-              <Typography
-                id="modal-modal-description"
-                sx={{
-                  fontSize: "1.15rem",
-                  color: "white",
+            {metadata.name}
+          </Typography>
+          <div>
+            <Button
+              variant="contained"
+              onClick={handleOpen}
+              sx={{
+                background: "linear-gradient(90deg, #677ce6 0%, #a685e2 100%)",
+                color: "#fff",
+                fontWeight: 600,
+                borderRadius: "8px",
+                px: 3,
+                py: 1,
+                boxShadow: "0 2px 8px rgba(103,124,230,0.10)",
+                textTransform: "none",
+                fontSize: "1rem",
+                "&:hover": {
                   background:
                     "linear-gradient(90deg, #a685e2 0%, #677ce6 100%)",
-                  borderRadius: "10px",
-                  p: 2,
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-                  mb: 2,
-                  display: "block",
-                  fontWeight: 500,
-                }}
-              >
-                <Box component="span" fontWeight="bold" sx={{ color: "black" }}>
-                  Token ID:
-                </Box>{" "}
-                {event.tokenId}
-              </Typography>
-              <Typography
+                },
+              }}
+            >
+              View Details
+            </Button>
+            <Modal
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+              sx={{
+                backdropFilter: "blur(2px)",
+              }}
+            >
+              <Box
                 sx={{
-                  mt: 1,
-                  color: "#888",
-                  fontStyle: "italic",
-                  fontSize: "1.05rem",
-                  letterSpacing: 0.5,
-                  display: "block",
+                  ...style,
+                  border: "2px solid #a685e2",
+                  boxShadow: "0 8px 32px 0 rgba(103,124,230,0.18)",
+                  background:
+                    "linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%)",
                 }}
               >
-                Minted by:
-                <span style={{ fontWeight: 600, marginLeft: 8 }}>
-                  {shortenAddress(event.address) || "Unknown"}
-                </span>
-              </Typography>
-            </Stack>
-          </Box>
-        </Modal>
-      </div>
-    </Stack>
+                <img
+                  src={metadata.image}
+                  alt="NFT Detail"
+                  style={{
+                    width: "340px",
+                    borderRadius: "12px",
+                    marginRight: "30px",
+                    aspectRatio: "1",
+                    objectFit: "cover",
+                    boxShadow: "0 2px 12px rgba(103,124,230,0.10)",
+                  }}
+                />
+                <Stack spacing={2} sx={{ ml: 4 }}>
+                  <Typography
+                    id="modal-modal-title"
+                    variant="h5"
+                    component="h2"
+                    fontWeight={800}
+                    sx={{
+                      color: "#4f46e5",
+                      mb: 2,
+                      letterSpacing: 1,
+                      textShadow: "0 2px 8px rgba(67,198,172,0.08)",
+                      fontSize: "2rem",
+                    }}
+                  >
+                    <Box
+                      component="span"
+                      fontWeight="bold"
+                      sx={{ color: "black" }}
+                    >
+                      Name:
+                    </Box>{" "}
+                    {metadata.name}
+                  </Typography>
+                  <Typography
+                    id="modal-modal-description"
+                    sx={{
+                      fontSize: "1.15rem",
+                      color: "white",
+                      background:
+                        "linear-gradient(90deg, #a685e2 0%, #677ce6 100%)",
+                      borderRadius: "10px",
+                      p: 2,
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                      mb: 2,
+                      display: "block",
+                      fontWeight: 500,
+                    }}
+                  >
+                    <Box
+                      component="span"
+                      fontWeight="bold"
+                      sx={{ color: "black" }}
+                    >
+                      Token ID:
+                    </Box>{" "}
+                    {event.tokenId}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      mt: 1,
+                      color: "#888",
+                      fontStyle: "italic",
+                      fontSize: "1.05rem",
+                      letterSpacing: 0.5,
+                      display: "block",
+                    }}
+                  >
+                    Minted by:
+                    <span style={{ fontWeight: 600, marginLeft: 8 }}>
+                      {shortenAddress(event.to) || "Unknown"}
+                    </span>
+                  </Typography>
+                </Stack>
+              </Box>
+            </Modal>
+          </div>
+        </Stack>
+      ) : (
+        <Box
+          sx={{
+            marginTop: "50px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <CircularProgress size="4rem" />
+        </Box>
+      )}
+    </>
   );
 }

@@ -25,42 +25,28 @@ const responsive = {
   },
 };
 
-export default function MintEvent() {
+export default function MintEvent({
+  AllMintEvent,
+  MyMintEvent,
+}: {
+  AllMintEvent: any[];
+  MyMintEvent: any[];
+}) {
   const { address } = useContext(AddressContext);
   const [checked, setChecked] = useState(false);
-  const [MintEvent, setMintEvent] = useState<Array<any>>([]);
+
+  const [MintEvent, setMintEvent] = useState<Array<any>>(AllMintEvent);
 
   const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
   };
 
   useEffect(() => {
-    const fetchMintEvent = async () => {
-      try {
-        if (checked) {
-          // console.log("Address", address);
-          const response = await fetch(
-            `http://localhost:3000/events/mint?address=${address}`
-          );
-          console.log("Response", response);
-          if (!response.ok) {
-            throw new Error("Failed to fetch Mint event");
-          }
-          const data = await response.json();
-          setMintEvent(data.mints);
-        } else {
-          const response = await fetch("http://localhost:3000/events/mint");
-          if (!response.ok) {
-            throw new Error("Failed to fetch Mint event");
-          }
-          const data = await response.json();
-          setMintEvent(data.mints);
-        }
-      } catch (error) {
-        console.error("Error fetching Mint event.", error);
-      }
-    };
-    fetchMintEvent();
+    if (checked) {
+      setMintEvent(MyMintEvent);
+    } else {
+      setMintEvent(AllMintEvent);
+    }
   }, [checked]);
 
   return (

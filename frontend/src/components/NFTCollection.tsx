@@ -86,7 +86,12 @@ export default function NFTCollection() {
       {NFTCollection && NFTCollection.length > 0 ? (
         <Carousel responsive={responsive}>
           {NFTCollection.map((nft, index) => (
-            <NFT metadata={nft.metadata} owner={nft.owner_of} key={index} />
+            <NFT
+              metadata={nft.metadata}
+              owner={nft.owner_of}
+              key={index}
+              minter={nft.minter_address}
+            />
           ))}
         </Carousel>
       ) : (
