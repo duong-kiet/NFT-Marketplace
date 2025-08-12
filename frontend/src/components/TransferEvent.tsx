@@ -38,16 +38,13 @@ export default function TransferEvent() {
     const fetchTransferEvent = async () => {
       try {
         if (checked) {
-          // console.log("Address", address);
           const response = await fetch(
             `http://localhost:3000/events/transfer?from=${address}`
           );
-          console.log("Response", response);
           if (!response.ok) {
             throw new Error("Failed to fetch Mint event");
           }
           const data = await response.json();
-          console.log(data);
           setTransferEvent(data.transfers);
         } else {
           const response = await fetch("http://localhost:3000/events/transfer");
