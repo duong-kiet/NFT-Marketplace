@@ -1,12 +1,10 @@
 import React, { useRef } from "react";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { PinataSDK } from "pinata";
-import KTKContract from ".././../../artifacts/contracts/KietToken.sol/KietToken.json";
 import { ethers } from "ethers";
-import { getSigner } from "../utils/EthersProvider";
 import Swal from "sweetalert2";
-import { KTKContractAddress } from "../constants/addresses";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import { contractSigner } from "../utils/EthersContract";
 
 const pinata = new PinataSDK({
   pinataJwt: import.meta.env.VITE_PINATA_JWT || "",
@@ -37,15 +35,8 @@ export default function MintSection() {
       }
 
       // Mint the NFT
-      const signer = await getSigner();
-      const contract = new ethers.Contract(
-        KTKContractAddress,
-        KTKContract.abi,
-        signer
-      );
-
       const valueInWei = ethers.parseEther("0.001");
-      const tx = await contract.publicMint(
+      const tx = await contractSigner.publicMint(
         `https://${import.meta.env.VITE_PINATA_GATEWAY}/ipfs/${upload.cid}`,
         { value: valueInWei }
       );
@@ -53,7 +44,7 @@ export default function MintSection() {
       const mintedEvent = receipt.logs
         .map((log: any) => {
           try {
-            return contract.interface.parseLog(log);
+            return contractSigner.interface.parseLog(log);
           } catch {
             return null;
           }

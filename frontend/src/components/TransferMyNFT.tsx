@@ -8,12 +8,9 @@ import {
 } from "@mui/material";
 import { useState, useContext } from "react";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { getSigner } from "../utils/EthersProvider";
-import { KTKContractAddress } from "../constants/addresses";
-import { ethers } from "ethers";
-import KTKContract from "../../../artifacts/contracts/KietToken.sol/KietToken.json";
 import { AddressContext } from "../context/AddressContext";
 import Swal from "sweetalert2";
+import { contractSigner } from "../utils/EthersContract";
 
 export default function TransferMyNFT({
   metadata,
@@ -42,15 +39,11 @@ export default function TransferMyNFT({
 
     try {
       // Transfer NFTs
-      const signer = await getSigner();
-
-      const contract = new ethers.Contract(
-        KTKContractAddress,
-        KTKContract.abi,
-        signer
+      const tx = await contractSigner.safeTransferFrom(
+        address,
+        toAddress,
+        token_id
       );
-
-      const tx = await contract.safeTransferFrom(address, toAddress, token_id);
       await tx.wait();
 
       Swal.fire({

@@ -12,5 +12,22 @@ export const query = gql`
       tokenId
       uri
     }
+    allTransfer: transfers(
+      where: { from_not: "0x0000000000000000000000000000000000000000" }
+    ) {
+      from
+      to
+      tokenId
+    }
+    myTransfer: transfers(
+      where: {
+        from_not: "0x0000000000000000000000000000000000000000"
+        from: $to
+      }
+    ) {
+      from
+      to
+      tokenId
+    }
   }
 `;

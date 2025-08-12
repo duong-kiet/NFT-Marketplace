@@ -34,7 +34,6 @@ export default function MintEvent({
 }) {
   const { address } = useContext(AddressContext);
   const [checked, setChecked] = useState(false);
-
   const [MintEvent, setMintEvent] = useState<Array<any>>(AllMintEvent);
 
   const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {

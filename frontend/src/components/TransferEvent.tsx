@@ -25,40 +25,28 @@ const responsive = {
   },
 };
 
-export default function TransferEvent() {
+export default function TransferEvent({
+  AllTransferEvent,
+  MyTransferEvent,
+}: {
+  AllTransferEvent: any[];
+  MyTransferEvent: any[];
+}) {
   const { address } = useContext(AddressContext);
   const [checked, setChecked] = useState(false);
-  const [TransferEvent, setTransferEvent] = useState<Array<any>>([]);
+  const [TransferEvent, setTransferEvent] =
+    useState<Array<any>>(AllTransferEvent);
 
   const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
   };
 
   useEffect(() => {
-    const fetchTransferEvent = async () => {
-      try {
-        if (checked) {
-          const response = await fetch(
-            `http://localhost:3000/events/transfer?from=${address}`
-          );
-          if (!response.ok) {
-            throw new Error("Failed to fetch Mint event");
-          }
-          const data = await response.json();
-          setTransferEvent(data.transfers);
-        } else {
-          const response = await fetch("http://localhost:3000/events/transfer");
-          if (!response.ok) {
-            throw new Error("Failed to fetch Mint event");
-          }
-          const data = await response.json();
-          setTransferEvent(data.transfers);
-        }
-      } catch (error) {
-        console.error("Error fetching Mint event.", error);
-      }
-    };
-    fetchTransferEvent();
+    if (checked) {
+      setTransferEvent(MyTransferEvent);
+    } else {
+      setTransferEvent(AllTransferEvent);
+    }
   }, [checked]);
 
   return (

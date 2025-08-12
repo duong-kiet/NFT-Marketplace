@@ -19,17 +19,21 @@ import CircularProgress from "@mui/material/CircularProgress";
 interface Data {
   allMinted?: any[];
   myMinted?: any[];
+  allTransfer?: any[];
+  myTransfer?: any[];
 }
 
 function App() {
   const [address, setAddress] = useState("");
 
   const { data, status } = useQuery({
-    queryKey: ["data"],
+    queryKey: ["data", address],
     async queryFn() {
       return await request(url, query, { to: address }, headers);
     },
   });
+
+  console.log(data);
 
   return (
     <AddressContext.Provider value={{ address, setAddress }}>
@@ -68,7 +72,10 @@ function App() {
             AllMintEvent={(data as Data).allMinted ?? []}
             MyMintEvent={(data as Data).myMinted ?? []}
           />
-          <TransferEvent />
+          <TransferEvent
+            AllTransferEvent={(data as Data).allTransfer ?? []}
+            MyTransferEvent={(data as Data).myTransfer ?? []}
+          />
         </>
       ) : null}
     </AddressContext.Provider>
